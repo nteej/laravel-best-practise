@@ -5,7 +5,7 @@ FROM php:8.1
 RUN apt-get update
 
 # Install PHP and composer dependencies
-RUN apt-get install -qq git curl libmcrypt-dev libjpeg-dev libpng-dev libfreetype6-dev libbz2-dev
+RUN apt-get install -qq git curl zip libmcrypt-dev libjpeg-dev libpng-dev libfreetype6-dev libbz2-dev
 
 # Clear out the local repository of retrieved package files
 RUN apt-get clean
