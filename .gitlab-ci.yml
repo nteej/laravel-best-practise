@@ -19,13 +19,14 @@ deploy_production:
   script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY"
     - ssh-add <(echo "$SSH_PRIVATE_KEY")
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
     - ~/.composer/vendor/bin/envoy run deploy --commit="$CI_COMMIT_SHA"
   environment:
     name: production
-    url: http://137.184.233.228
+    url: http://devapi.cc
   when: manual
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
