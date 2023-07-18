@@ -13,15 +13,6 @@ stages:
   - test
   - deploy
 
-unit_test:
-  stage: test
-  script:
-    - cp .env.example .env
-    - composer install
-    - php artisan key:generate
-    - php artisan migrate
-    - vendor/bin/phpunit
-
 deploy_production:
   stage: deploy
   script:
@@ -33,7 +24,18 @@ deploy_production:
     - ~/.composer/vendor/bin/envoy run deploy --commit="$CI_COMMIT_SHA"
   environment:
     name: production
-    url: http://192.168.1.1
+    url: http://137.184.233.228
   when: manual
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+
+
+unit_testing:
+  stage: test
+  script:
+    - cp .env.example .env
+    - composer install
+    - php artisan key:generate
+    - php artisan migrate
+    - vendor/bin/phpunit
+
