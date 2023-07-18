@@ -10,8 +10,9 @@ variables:
   DB_USERNAME: root
 
 stages:
-  - test
   - deploy
+  - test
+  
 
 deploy_production:
   stage: deploy
