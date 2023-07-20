@@ -30,8 +30,6 @@ deploy_production:
   when: manual
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
-
-
 unit_testing:
   stage: test
   script:
