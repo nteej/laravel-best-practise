@@ -20,5 +20,7 @@ Route::get('/', [GuestController::class,'index']);
 Auth::routes(['register' => false]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::post('/commodities/upload', [App\Http\Controllers\Admin\CommodityController::class,'upload'])->name('commodities.upload');
-Route::get('/admin/commodities', [App\Http\Controllers\Admin\CommodityController::class, 'create']);
+Route::post('/admin/commodities/upload', [App\Http\Controllers\Admin\CommodityController::class,'upload'])->name('commodities.upload');
+Route::get('/admin/commodities/', [App\Http\Controllers\Admin\CommodityController::class, 'index'])->name('commodities.list');
+Route::get('/admin/commodities/create', [App\Http\Controllers\Admin\CommodityController::class, 'index'])->name('commodities.create');
+Route::get('/admin/commodities/upload', [App\Http\Controllers\Admin\CommodityController::class, 'uploadFile'])->name('commodities.uploadFile');
