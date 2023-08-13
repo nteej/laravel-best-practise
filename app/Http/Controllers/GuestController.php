@@ -10,7 +10,7 @@ class GuestController extends Controller
     //
     public function index()
     {
-        $commodities = Commodity::select('item_en','item_si')->get();
+        $commodities = Commodity::with('category')->get();
         return view('welcome',compact('commodities'));
     }
 }

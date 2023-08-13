@@ -32,7 +32,7 @@
                         <tbody>
                         @foreach ($commodities as $commodity)
                             <tr>
-                                <td>{{ $commodity->category }}</td>
+                                <td>{{ $commodity->category->cat_name }}</td>
                                 <td>{{ $commodity->item_en }}</td>
                                 <td>{{ $commodity->item_si }}</td>
                                 <td>{{ $commodity->item_tm }}</td>

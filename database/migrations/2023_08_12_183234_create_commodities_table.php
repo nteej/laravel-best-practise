@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('commodities', function (Blueprint $table) {
             $table->id();
-            $table->integer('category')->nullable();
+            $table->integer('category_id')->index()->nullable();
             $table->string('item_en')->nullable();
             $table->string('item_si')->nullable();
             $table->string('item_tm')->nullable();
