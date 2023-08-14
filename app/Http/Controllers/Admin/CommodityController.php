@@ -33,7 +33,7 @@ class CommodityController extends Controller
 
     public function uploadFile()
     {
-        $history = History::all();
+        $history = History::paginate(2);
         return view('admin.commodities.uploads', compact('history'));
     }
 
