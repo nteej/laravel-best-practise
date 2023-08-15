@@ -20,6 +20,8 @@ class GuestController extends Controller
             ->select('item_en', 'item_si', 'price_from', 'price_to', 'base_date')
             ->get();
 
+        dd($latestPrices[1]);
+
         $previousPrices = Commodity::where('base_date', '<', $latestPrices[0]->base_date)
             ->select('item_en', 'item_si', 'price_from', 'price_to', 'base_date')
             ->get();
