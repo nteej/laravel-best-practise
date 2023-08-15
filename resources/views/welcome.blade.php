@@ -13,7 +13,7 @@
         border-radius: 5px;
         display: flex;
         align-items: center;
-        animation: float 55000s linear infinite; /* Adjust the duration as needed */
+        animation: float 1000s linear infinite; /* Adjust the duration as needed */
     }
 
     .price {
@@ -116,7 +116,7 @@
                     dataType: 'json',
                     success: function (data) {
                         // Sort the data based on percentage change
-                        data.sort(function (a, b) {
+                        /*data.sort(function (a, b) {
                             // Sort negative changes first, then positive, then no changes
                             if (a.percentage_change < b.percentage_change) {
                                 return 1;
@@ -125,7 +125,7 @@
                             } else {
                                 return 0;
                             }
-                        });
+                        });*/
                         updateFloatingDisplay(data);
                         //currentIndex++; // Move to the next index for the next call
                     },
@@ -140,18 +140,18 @@
                 display.empty();
 
                 $.each(prices, function (index, price) {
-                    if (price.price_from >= 1 && price.price_to >= 1) {
+                    //if (price.price_from >= 1 && price.price_to >= 1) {
                         var price_change = (price.percentage_change >= 1) ? (price.percentage_change >= 0 ? '+' : '-') + Math.abs(price.percentage_change).toFixed(2) + '%' : '';
                         var priceHtml = '<div class="price">' +
                             '<span class="item">' + price.item_en +'</br>'+ price.item_si + '</span>' +
-                            '<span class="price-value">' + price.price_from + '-' + price.price_to + '</span>' +
+                            '<span class="price-value">' + price.price + '</span>' +
                             '<span class="change ' + (price.percentage_change >= 0 ? 'positive' : 'negative') + '">' +
                             price_change +
                             '</span>' +
                             '</div>';
 
                         display.append(priceHtml);
-                    }
+                   // }
                 });
 
             }
