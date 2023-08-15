@@ -109,7 +109,7 @@
         $(document).ready(function() {
             $('#commoditiesTable').DataTable();
         } );
-        var ctx = document.getElementById('commoditiesGraph').getContext('2d');
+        /*var ctx = document.getElementById('commoditiesGraph').getContext('2d');
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
@@ -125,7 +125,7 @@
             options: {
                 // Customize chart options here
             }
-        });
+        });*/
     </script>
 </body>
 </html>

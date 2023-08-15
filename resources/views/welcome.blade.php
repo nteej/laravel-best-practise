@@ -1,13 +1,71 @@
 <!-- resources/views/commodities/index.blade.php -->
 
 @extends('layouts.app')
+<style>
+    #floating-display {
+        position: fixed;
+        top: 55px; /* Adjust the top distance as needed */
+        right: 20px;
+        white-space: nowrap;
+        overflow: hidden;
+        background-color: rgba(0, 0, 0, 0.8);
+        padding: 10px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        animation: float 1000s linear infinite; /* Adjust the duration as needed */
+    }
 
+    .price {
+        margin-right: 15px;
+        white-space: nowrap;
+        font-size: 14px;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateX(100%);
+        }
+        100% {
+            transform: translateX(-100%);
+        }
+    }
+
+    .item {
+        font-weight: bold;
+        margin-right: 5px;
+        color: white;
+    }
+
+    .price-value {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .change {
+        font-style: italic;
+        margin-left: 5px;
+    }
+
+    .positive {
+        color: red; /* Positive change color */
+    }
+
+    .negative {
+        color: green; /* Negative change color */
+    }
+
+</style>
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
             <div class="row">
-                <div class="col-md-4"></div>
-                <div class="col-md-8"></div>
+
+                <div class="col-md-12">
+                    <div id="floating-display">
+                        <!-- Display the fetched commodity prices here -->
+                    </div>
+                </div>
             </div>
 
             <div class="row">
@@ -48,4 +106,59 @@
 
         </div>
     </div>
+    <script>
+        $(document).ready(function () {
+            // var currentIndex = 0; // Initial index for fetching
+            function fetchCommodityPrices() {
+                $.ajax({
+                    url: '{{ route('api.commodity_prices') }}', // Passing the index as a parameter
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        // Sort the data based on percentage change
+                        data.sort(function (a, b) {
+                            // Sort negative changes first, then positive, then no changes
+                            if (a.percentage_change < b.percentage_change) {
+                                return 1;
+                            } else if (a.percentage_change > b.percentage_change) {
+                                return -1;
+                            } else {
+                                return 0;
+                            }
+                        });
+                        updateFloatingDisplay(data);
+                        //currentIndex++; // Move to the next index for the next call
+                    },
+                    error: function () {
+                        console.log('Error fetching commodity prices.');
+                    }
+                });
+            }
+
+            function updateFloatingDisplay(prices) {
+                var display = $('#floating-display');
+                display.empty();
+
+                $.each(prices, function (index, price) {
+                    if (price.price_from >= 1 && price.price_to >= 1) {
+                        var price_change = (price.percentage_change >= 1) ? (price.percentage_change >= 0 ? '+' : '-') + Math.abs(price.percentage_change).toFixed(2) + '%' : '';
+                        var priceHtml = '<div class="price">' +
+                            '<span class="item">' + price.item_en +'</br>'+ price.item_si + '</span>' +
+                            '<span class="price-value">' + price.price_from + '-' + price.price_to + '</span>' +
+                            '<span class="change ' + (price.percentage_change >= 0 ? 'positive' : 'negative') + '">' +
+                            price_change +
+                            '</span>' +
+                            '</div>';
+
+                        display.append(priceHtml);
+                    }
+                });
+
+            }
+
+            fetchCommodityPrices();
+            //setInterval(fetchCommodityPrices, 5000);
+        });
+    </script>
+
 @endsection
