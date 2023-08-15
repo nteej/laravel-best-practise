@@ -19,7 +19,7 @@ class CommodityController extends Controller
 
     public function index()
     {
-        $commodities = Commodity::with('category')->get();
+        $commodities = Commodity::with('category')->orderByDesc('base_date')->get();
         $history = History::all();
         return view('admin.commodities.index', compact('commodities', 'history'));
     }
