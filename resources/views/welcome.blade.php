@@ -13,7 +13,7 @@
         border-radius: 5px;
         display: flex;
         align-items: center;
-        animation: float 1000s linear infinite; /* Adjust the duration as needed */
+        animation: float 80000s linear infinite; /* Adjust the duration as needed */
     }
 
     .price {
