@@ -65,13 +65,17 @@ class CommodityController extends Controller
 
 
                 foreach ($data as $row) {
+                    $price_from = (isset($row[4]) && $row[4] != null) ? $row[4] : 0.00;
+                    $price_to = (isset($row[5]) && $row[5] != null) ? $row[5] : 0.00;
+                    $price = ($price_from+$price_to)/2;
                     $commodity = new Commodity();
                     $commodity->category_id = isset($row[0]) ? $row[0] : 1;
                     $commodity->item_en = isset($row[1]) ? $row[1] : null;
                     $commodity->item_si = isset($row[2]) ? $row[2] : null;
                     $commodity->item_tm = isset($row[3]) ? $row[3] : null;
-                    $commodity->price_from = (isset($row[4]) && $row[4] != null) ? $row[4] : 0.00;
-                    $commodity->price_to = (isset($row[5]) && $row[5] != null) ? $row[5] : 0.00;
+                    $commodity->price_from = $price_from;
+                    $commodity->price_to = $price_to;
+                    $commodity->price = $price;
                     $commodity->base_date = isset($row[6]) ? $row[6] : date('Y-m-d');
                     $commodity->save();
                 }
