@@ -13,7 +13,7 @@
         border-radius: 5px;
         display: flex;
         align-items: center;
-        animation: float 80000s linear infinite; /* Adjust the duration as needed */
+        animation: float 1000s linear infinite; /* Adjust the duration as needed */
     }
 
     .price {
@@ -60,14 +60,14 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="row">
-
                 <div class="col-md-12">
                     <div id="floating-display">
                         <!-- Display the fetched commodity prices here -->
                     </div>
+
                 </div>
             </div>
-
+           
             <div class="row">
                 <div class="col-md-12"><h2>Dambulla Economic Center Price Index</h2>
                     <table class="table" id="commoditiesTable" data-dynatable>
@@ -141,17 +141,17 @@
 
                 $.each(prices, function (index, price) {
                     //if (price.price_from >= 1 && price.price_to >= 1) {
-                        var price_change = (price.percentage_change >= 1) ? (price.percentage_change >= 0 ? '+' : '-') + Math.abs(price.percentage_change).toFixed(2) + '%' : '';
-                        var priceHtml = '<div class="price">' +
-                            '<span class="item">' + price.item_en +'</br>'+ price.item_si + '</span>' +
-                            '<span class="price-value">' + price.price + '</span>' +
-                            '<span class="change ' + (price.percentage_change >= 0 ? 'positive' : 'negative') + '">' +
-                            price_change +
-                            '</span>' +
-                            '</div>';
+                    var price_change = (price.percentage_change >= 1) ? (price.percentage_change >= 0 ? '+' : '-') + Math.abs(price.percentage_change).toFixed(2) + '%' : '';
+                    var priceHtml = '<div class="price">' +
+                        '<span class="item">' + price.item_en + '</br>' + price.item_si + '</span>' +
+                        '<span class="price-value">' + price.price + '</span>' +
+                        '<span class="change ' + (price.percentage_change >= 0 ? 'positive' : 'negative') + '">' +
+                        price_change +
+                        '</span>' +
+                        '</div>';
 
-                        display.append(priceHtml);
-                   // }
+                    display.append(priceHtml);
+                    // }
                 });
 
             }
