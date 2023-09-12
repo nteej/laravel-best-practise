@@ -15,8 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [SiteController::class, 'default']);
-//Route::get('/', [SiteController::class, 'index']);
+//Route::get('/', [SiteController::class, 'default']);
+Route::get('/', [SiteController::class, 'index']);
 
 Route::get('language/{locale}', function ($locale) {
     app()->setLocale($locale);
