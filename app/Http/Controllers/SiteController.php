@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Commodity;
 use App\Models\History;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class SiteController extends Controller
 {
@@ -11,13 +13,13 @@ class SiteController extends Controller
     {
         $commodities = Commodity::with('category')->orderByDesc('base_date')->get();
         $history = History::all();
-        return view('welcome',compact('commodities'));
+        return view('welcome', compact('commodities'));
     }
     public function default()
     {
         $commodities = Commodity::with('category')->orderByDesc('base_date')->get();
         $history = History::all();
-        return view('site.default',compact('commodities'));
+        return view('site.default', compact('commodities'));
     }
 
     public function services()
@@ -89,6 +91,92 @@ class SiteController extends Controller
         }
 
         return response()->json($pricesWithChanges);
+    }
 
+
+    public function calculatePriceVariance()
+    {
+        // Get a distinct list of commodity IDs
+        $commodityIds = Commodity::distinct()->pluck('id', 'item_en', 'item_si', 'price');
+        // ->select('item_en', 'item_si', 'price',
+
+        // Initialize an array to store the results
+        $results = [];
+
+        // Iterate through each commodity
+        foreach ($commodityIds as $commodityId) {
+            // Get the last available past price record for the commodity
+            $lastAvailablePrice = Commodity::where('id', $commodityId)
+                ->where('base_date', '<', Carbon::today()->format('Y-m-d'))
+                ->orderBy('base_date', 'desc')
+                ->first();
+
+            // Get today's price for the commodity
+            $todayPrice = Commodity::where('id', $commodityId)
+                ->where('base_date', Carbon::today()->format('Y-m-d'))
+                ->first();
+
+            // Calculate the price variance
+            if ($lastAvailablePrice && $todayPrice) {
+                $variance = $todayPrice->price - $lastAvailablePrice->price;
+                $percentage_change = (($todayPrice->price - $lastAvailablePrice->price) / $previousPrice->price) * 100;
+            } else {
+                // Handle cases where data may not be available
+                $variance = null;
+                $percentage_change = 0;
+            }
+
+            // Store the result
+            $results[] = [
+                'commodity_id' => $commodityId,
+                'price_variance' => $variance,
+
+            ];
+        }
+
+        return response()->json($results);
+    }
+
+    public function getLatestPrices()
+    {
+        // Subquery to find the latest base_date for each commodity
+        $dateIndexes = Commodity::select('base_date')
+            ->groupBy('base_Date')
+            ->orderBy('base_Date', 'desc')
+            ->limit(2)
+            ->get();
+        // dd($dateIndexes[0]['base_date']);
+        $dataSet = [];
+        $latest = Commodity::select('base_date', 'item_en', 'item_si', 'price')->where('base_Date', $dateIndexes[0]['base_date'])->get();
+        $yesterday = Commodity::select('base_date', 'item_en', 'item_si', 'price')->where('base_Date', $dateIndexes[1]['base_date'])->get();
+
+        foreach ($latest as $k => $item) {
+            $price_var = 0;
+            $status = '';
+            if ($item['price'] != 0 && $yesterday[$k]['price'] != 0) {
+                if ($item['price'] > $yesterday[$k]['price']) {
+                    $price_var = ($item['price'] - $yesterday[$k]['price']);
+                    $status = '+';
+                } elseif ($item['price'] == $yesterday[$k]['price']) {
+                    $price_var = 0;
+                    $status = '';
+                } else {
+                    $price_var = $yesterday[$k]['price'] - $item['price'];
+                    $status = '-';
+                }
+                if ($price_var > 0) {
+                    $dataSet[] = [
+                        'base_date' => $item['base_date'],
+                        'item_en' => $item['item_en'],
+                        'item_si' => $item['item_si'],
+                        'price' => $item['price'],
+                        'percentage_change' => $price_var,2,
+                        'status' => $status
+                    ];
+                }
+            }
+        }
+
+        return response()->json($dataSet);
     }
 }

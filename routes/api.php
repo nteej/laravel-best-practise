@@ -18,4 +18,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('commodity-prices', [SiteController::class,'getCommodityPrices'])->name('api.commodity_prices');
+Route::get('commodity-prices', [SiteController::class,'getLatestPrices'])->name('api.commodity_prices');
+Route::get('best-price', [SiteController::class,'getLatestPrices'])->name('api.bestprice');
