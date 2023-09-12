@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\siteController;
+use App\Http\Controllers\SiteController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -18,4 +18,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('commodity-prices', [siteController::class,'getCommodityPrices'])->name('api.commodity_prices');
+Route::get('commodity-prices', [SiteController::class,'getCommodityPrices'])->name('api.commodity_prices');
