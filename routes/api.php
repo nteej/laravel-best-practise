@@ -20,3 +20,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('commodity-prices', [SiteController::class,'getLatestPrices'])->name('api.commodity_prices');
 Route::get('best-price', [SiteController::class,'getLatestPrices'])->name('api.bestprice');
+Route::get('locations', [SiteController::class,'getLocations'])->name('api.locations');

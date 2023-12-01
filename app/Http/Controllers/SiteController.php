@@ -153,9 +153,13 @@ class SiteController extends Controller
         foreach ($latest as $k => $item) {
             $price_var = 0;
             $status = '';
+            $last_price = 0;
+            $last_date = '';
             if ($item['price'] != 0 && $yesterday[$k]['price'] != 0) {
                 if ($item['price'] > $yesterday[$k]['price']) {
                     $price_var = ($item['price'] - $yesterday[$k]['price']);
+                    $last_price = $yesterday[$k]['price'];
+                    $last_date = $yesterday[$k]['base_date'];
                     $status = '+';
                 } elseif ($item['price'] == $yesterday[$k]['price']) {
                     $price_var = 0;
@@ -163,12 +167,16 @@ class SiteController extends Controller
                 } else {
                     $price_var = $yesterday[$k]['price'] - $item['price'];
                     $status = '-';
+                    $last_price = $yesterday[$k]['price'];
+                    $last_date = $yesterday[$k]['base_date'];
                 }
                 if ($price_var > 0) {
                     $dataSet[] = [
                         'base_date' => $item['base_date'],
                         'item_en' => $item['item_en'],
                         'item_si' => $item['item_si'],
+                        'last_price'=> $last_price,
+                        'last_date'=> $last_date,
                         'price' => $item['price'],
                         'percentage_change' => $price_var,2,
                         'status' => $status
@@ -176,7 +184,29 @@ class SiteController extends Controller
                 }
             }
         }
-
+        $key_values = array_column($dataSet, 'percentage_change');
+        array_multisort($key_values,SORT_DESC,$dataSet) ;
+        //dd($dataSet);
         return response()->json($dataSet);
+    }
+
+    public function getLocations(){
+        $query = Address::query();
+        $search = $request->get('search');
+        $columns = ['postcode', 'address', 'lat_long'];
+        //dd($request->ajax());
+        if ($request->ajax()) {
+            foreach ($columns as $column) {
+                $query->orWhere($column, 'LIKE', '%' . $search . '%');
+            }
+            $data = $query->select("id","postcode", "address","lat_long")
+                ->where('lat_long','!=',NULL)
+                ->limit(10)->get();
+            return $this->apiResponse($data);
+        } else {
+            $data = Address::where('lat_long','!=',NULL)
+                ->limit(10)->get();
+            return $this->successResponse('Data retrieved successfully', $data);
+        }
     }
 }
