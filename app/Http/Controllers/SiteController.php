@@ -7,9 +7,13 @@ use App\Models\History;
 use App\Models\Address;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use App\Traits\ApiResponse;
 
 class SiteController extends Controller
 {
+    use ApiResponse;
+
     public function index()
     {
         $commodities = Commodity::with('category')->orderByDesc('base_date')->get();
@@ -191,12 +195,12 @@ class SiteController extends Controller
         return response()->json($dataSet);
     }
 
-    public function getLocations(){
+    public function getLocations(Request $request){
         $query = Address::query();
         $search = $request->get('search');
         $columns = ['postcode', 'address', 'lat_long'];
         //dd($request->ajax());
-        if ($request->ajax()) {
+        if (!$request->ajax()) {
             foreach ($columns as $column) {
                 $query->orWhere($column, 'LIKE', '%' . $search . '%');
             }
