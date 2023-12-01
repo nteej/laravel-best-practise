@@ -200,7 +200,7 @@ class SiteController extends Controller
         $search = $request->get('search');
         $columns = ['postcode', 'address', 'lat_long'];
         //dd($request->ajax());
-        if (!$request->ajax()) {
+        if ($request->ajax()) {
             foreach ($columns as $column) {
                 $query->orWhere($column, 'LIKE', '%' . $search . '%');
             }
