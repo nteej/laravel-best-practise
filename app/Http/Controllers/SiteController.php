@@ -199,8 +199,8 @@ class SiteController extends Controller
         $query = Address::query();
         $search = $request->get('search');
         $columns = ['postcode', 'address', 'lat_long'];
-        //dd($request->ajax());
-        if ($request->ajax()) {
+        
+        
             foreach ($columns as $column) {
                 $query->orWhere($column, 'LIKE', '%' . $search . '%');
             }
@@ -208,10 +208,6 @@ class SiteController extends Controller
                 ->where('lat_long','!=',NULL)
                 ->limit(10)->get();
             return $this->apiResponse($data);
-        } else {
-            $data = Address::where('lat_long','!=',NULL)
-                ->limit(10)->get();
-            return $this->successResponse('Data retrieved successfully', $data);
-        }
+        
     }
 }
