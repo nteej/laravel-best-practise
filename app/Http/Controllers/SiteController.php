@@ -198,16 +198,15 @@ class SiteController extends Controller
     public function getLocations(Request $request){
         $query = Address::query();
         $search = $request->get('search');
-        $columns = ['postcode', 'address', 'lat_long'];
+        $columns = ['postcode', 'address', 'lat_long','customer'];
         
         
             foreach ($columns as $column) {
                 $query->orWhere($column, 'LIKE', '%' . $search . '%');
             }
-            $data = $query->select("id","postcode", "address","lat_long")
+            $data = $query->select('id',DB::Raw("CONCAT(CONCAT(postcode,'-'), address) AS location"),'lat_long','customer')
                 ->where('lat_long','!=',NULL)
                 ->limit(10)->get();
             return $this->apiResponse($data);
-        
     }
 }
