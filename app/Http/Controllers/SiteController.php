@@ -199,14 +199,17 @@ class SiteController extends Controller
         $query = Address::query();
         $search = $request->get('search');
         $columns = ['postcode', 'address', 'lat_long','customer'];
-        
-        
             foreach ($columns as $column) {
                 $query->orWhere($column, 'LIKE', '%' . $search . '%');
             }
-            $data = $query->select('id',DB::Raw("CONCAT(CONCAT(postcode,'-'), address) AS location"),'lat_long','customer')
+            $data = $query->select('id',DB::Raw("CONCAT(CONCAT(address,'-'), postcode) AS location"),'lat_long','customer')
                 ->where('lat_long','!=',NULL)
                 ->limit(10)->get();
             return $this->apiResponse($data);
+    }
+    public function storeLocation(Request $request){
+        //$data=$request->all();
+        $ddress = Address::firstOrCreate(['lat_long' =>  $request->input('lat_long'),'address'=>$request->input('address')],['customer'=>$request->input('customer'),'address'=>$request->input('address'),'province'=> array_key_exists('province',$request->all())?$request->input('province'):""]);
+        return $this->apiResponse($ddress);
     }
 }
